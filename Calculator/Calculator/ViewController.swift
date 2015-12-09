@@ -1,0 +1,121 @@
+//
+//  ViewController.swift
+//  Calculator
+//
+//  Created by LiuFlueg on 12/1/15.
+//  Copyright © 2015 LiuFlueg. All rights reserved.
+//
+
+import UIKit
+
+class ViewController: UIViewController
+{
+
+    @IBOutlet weak var display: UILabel!
+
+    var userIsTypingNumbers:Bool = false
+    
+    var brain = CalculatorBrain()
+
+    @IBAction func appendDigit(sender: UIButton)
+    {
+        let digit = sender.currentTitle!
+        if userIsTypingNumbers {
+            display.text = display.text! + digit
+        } else{
+            display.text = digit
+            userIsTypingNumbers = true
+        }
+        
+//        print("digit = \(digit)")
+    }
+
+    //var operandStack: Array<Double> = Array<Double>()
+//    var operandStack = Array<Double>() // Convenient usage
+    
+    @IBAction func operate(sender: UIButton) {
+        if userIsTypingNumbers {
+            enter()
+        }
+        if let operation = sender.currentTitle {
+            if let result = brain.performOperation(operation) {
+                displayValue = result
+            } else {
+                displayValue = 0
+            }
+//        switch operation {
+////      case "×": performOperation(multiply)
+////      case "×": performOperation({(op1: Double, op2: Double) -> Double in
+////          return op1 * op2
+////        })
+////        case "×": performOperation({(op1, op2) in return op1 * op2})
+////        case "×": performOperation({ $0 * $1})
+//        case "×": performOperation() { $0 * $1}
+//        case "÷": performOperation() { $1 / $0}
+//        case "+": performOperation() { $0 + $1}
+//        case "−": performOperation() { $1 - $0}
+////        case "√": performOperation() { sqrt($0)}
+//        case "√": performOperationSingleOperand() { sqrt($0)}
+////            if operandStack.count >= 1 {
+////                displayValue = sq
+////                enter()
+////            }
+//        default:
+//            break
+//        }
+        }
+    }
+//    
+//    func performOperation(operation: (Double, Double) -> Double) {
+//        if operandStack.count >= 2 {
+//            displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
+//            enter()
+//        }
+//
+//    }
+//    
+//    // Thought diff arguments, conflict declaretion not allowed
+////    func performOperation(operation: Double -> Double) {
+//    func performOperationSingleOperand(operation: Double -> Double) {
+//        if operandStack.count >= 1 {
+//            displayValue = operation(operandStack.removeLast())
+//            enter()
+//        }
+//    }
+
+//    func multiply(op1: Double, op2: Double) -> Double {
+//        return op1 * op2
+//    }
+//    
+    @IBAction func enter() {
+        userIsTypingNumbers = false
+        //        operandStack.append(displayValue)
+        //        print("Enter operandStack = \(operandStack)")
+
+        if let result = brain.pushOperand(displayValue) {
+            displayValue = result
+        } else {
+            displayValue = 0
+        }
+        
+    }
+    
+    var displayValue: Double {
+        get {
+            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+        }
+        set {
+            // There's a magic varable newValue
+            display.text = "\(newValue)"
+        }
+    }
+    
+    @IBAction func delete() {
+        userIsTypingNumbers = false
+        display.text = "\(0)"
+//        print("DEL operandStack = \(operandStack)")
+
+    }
+
+}
+
