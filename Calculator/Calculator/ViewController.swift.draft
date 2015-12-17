@@ -40,7 +40,9 @@ class ViewController: UIViewController
 //        print("digit = \(digit)")
     }
 
-   
+    //var operandStack: Array<Double> = Array<Double>()
+//    var operandStack = Array<Double>() // Convenient usage
+    
     @IBAction func operate(sender: UIButton) {
         if userIsTypingNumbers {
             enter()
@@ -52,10 +54,50 @@ class ViewController: UIViewController
             } else {
                 displayValue = 0
             }
-
+//        switch operation {
+////      case "×": performOperation(multiply)
+////      case "×": performOperation({(op1: Double, op2: Double) -> Double in
+////          return op1 * op2
+////        })
+////        case "×": performOperation({(op1, op2) in return op1 * op2})
+////        case "×": performOperation({ $0 * $1})
+//        case "×": performOperation() { $0 * $1}
+//        case "÷": performOperation() { $1 / $0}
+//        case "+": performOperation() { $0 + $1}
+//        case "−": performOperation() { $1 - $0}
+////        case "√": performOperation() { sqrt($0)}
+//        case "√": performOperationSingleOperand() { sqrt($0)}
+////            if operandStack.count >= 1 {
+////                displayValue = sq
+////                enter()
+////            }
+//        default:
+//            break
+//        }
         }
     }
+//    
+//    func performOperation(operation: (Double, Double) -> Double) {
+//        if operandStack.count >= 2 {
+//            displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
+//            enter()
+//        }
+//
+//    }
+//    
+//    // Thought diff arguments, conflict declaretion not allowed
+////    func performOperation(operation: Double -> Double) {
+//    func performOperationSingleOperand(operation: Double -> Double) {
+//        if operandStack.count >= 1 {
+//            displayValue = operation(operandStack.removeLast())
+//            enter()
+//        }
+//    }
 
+//    func multiply(op1: Double, op2: Double) -> Double {
+//        return op1 * op2
+//    }
+//    
     @IBAction func enter() {
         userIsTypingNumbers = false
         //        operandStack.append(displayValue)

@@ -28,8 +28,11 @@ class CalculatorBrain
         knownOps["+"] = Op.BinaryOperation("+") {$0 + $1}
         knownOps["−"] = Op.BinaryOperation("−") {$1 - $0}
         knownOps["√"] = Op.UnaryOperation("√") {sqrt($0)}
+        knownOps["cos"] = Op.UnaryOperation("cos") {cos($0)}
+        knownOps["sin"] = Op.UnaryOperation("sin") {sin($0)}
     }
     
+
     // Another way to make "ops" mutuable
     //private func evaluate(var ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
     private func evaluateValue(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
@@ -56,18 +59,37 @@ class CalculatorBrain
                     }
                 }
             // Since we handle all the case in Op, no need "default"
-            //default: break
+            //default:
+            //    break
             }
 
         }
         return (nil, ops)
     }
     
-    func evaluate() -> Double {
-        let (result, _) = evaluateValue(opStack)
-        return result!
+    func evaluate() -> Double? {
+        // In case the opStack in not valid.
+        let tmpOpStack = opStack
+        let (result, remainder) = evaluateValue(opStack)
+        print("\(opStack) = \(result) with \(remainder) left over")
+        if result == nil {
+            opStack = tmpOpStack
+            // Popup the last invalid operand.
+            opStack.popLast()
+            print("restore stack: \(opStack)")
+            return nil
+        } else {
+            return result!
+        }
     }
 
+    func cancle() {
+        while !opStack.isEmpty {
+            opStack.popLast()
+        }
+        print("Stack [\(opStack)] is clear now.")
+    }
+    
     func pushOperand(operand: Double) -> Double? {
         opStack.append(Op.Operand(operand))
         return evaluate()
