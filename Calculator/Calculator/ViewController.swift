@@ -122,7 +122,18 @@ class ViewController: UIViewController
         brain.cancle()
         processDisplay.text = "\(0)"
     }
+    @IBAction func singleDog() {
+        if !userIsTypingNumbers {
+            display.text = "I'm just a single dog! 🐶🐶"
+        }
+    }
     
+    @IBAction func kidding() {
+        if !userIsTypingNumbers {
+            display.text = "你TMD在逗我.😱😱"
+        }
+    }
+
     @IBAction func backSpace() {
         if userIsTypingNumbers {
             let newDispay = String(display.text!.characters.dropLast())
