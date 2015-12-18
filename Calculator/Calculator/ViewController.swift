@@ -16,26 +16,35 @@ class ViewController: UIViewController
     @IBOutlet weak var processDisplay: UILabel!
     
     var userIsTypingNumbers:Bool = false
-    var showOperationStack = false
     
     var brain = CalculatorBrain()
 
+    var stackHistory: String? {
+        get {
+            if let result = brain.dumpHistory() {
+                return result
+            }
+            return nil
+        }
+    }
+    
     @IBAction func appendDigit(sender: UIButton)
     {
         let digit = sender.currentTitle!
+        
+        if let history = stackHistory {
+            processDisplay.text = history
+        } else {
+            processDisplay.text = ""
+        }
+
         if userIsTypingNumbers {
             display.text = display.text! + digit
-            processDisplay.text! += digit
         } else {
             display.text = digit
             userIsTypingNumbers = true
-            if !showOperationStack {
-                processDisplay.text! = digit
-                showOperationStack = true
-            } else {
-                processDisplay.text! += digit
-            }
         }
+        processDisplay.text! += display.text!
         
 //        print("digit = \(digit)")
     }
@@ -45,12 +54,16 @@ class ViewController: UIViewController
         if userIsTypingNumbers {
             enter()
         }
+
         if let operation = sender.currentTitle {
             if let result = brain.performOperation(operation) {
                 displayValue = result
-                processDisplay.text! += operation
             } else {
-                displayValue = 0
+//                displayValue = 0
+            }
+            
+            if let proText = brain.dumpOpStack() {
+                processDisplay.text! = proText
             }
 
         }
@@ -60,7 +73,7 @@ class ViewController: UIViewController
         userIsTypingNumbers = false
         //        operandStack.append(displayValue)
         //        print("Enter operandStack = \(operandStack)")
-        if showOperationStack {
+        if !processDisplay.text!.hasSuffix(", ") {
             processDisplay.text! += ", "
         }
         if let result = brain.pushOperand(displayValue) {
@@ -73,7 +86,10 @@ class ViewController: UIViewController
     
     var displayValue: Double {
         get {
-            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+            if let result = NSNumberFormatter().numberFromString(display.text!) {
+                return result.doubleValue
+            }
+            return 0
         }
         set {
             // There's a magic varable newValue
@@ -82,14 +98,44 @@ class ViewController: UIViewController
     }
     
     @IBAction func delete() {
+        if userIsTypingNumbers {
+            enter()
+        }
+        
+        if let result = brain.backSpace() {
+            displayValue = result
+        } else {
+            displayValue = 0
+        }
+        
+        if let history = stackHistory {
+            processDisplay.text = history
+        } else {
+            processDisplay.text = ""
+        }
+        
+    }
+
+    @IBAction func clearStack() {
         userIsTypingNumbers = false
         display.text = "\(0)"
         brain.cancle()
         processDisplay.text = "\(0)"
-        showOperationStack = false
-//        print("DEL operandStack = \(operandStack)")
-
     }
+    
+    @IBAction func backSpace() {
+        if userIsTypingNumbers {
+            let newDispay = String(display.text!.characters.dropLast())
+            display.text = newDispay
 
+            if let history = stackHistory {
+                processDisplay.text = history
+            } else {
+                processDisplay.text = ""
+            }
+
+            processDisplay.text! += newDispay
+        }
+    }
 }
 
